@@ -2,20 +2,21 @@ package com.premise.eventsapi;
 
 import java.util.List;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ListAdapter;
 
 import com.premise.eventsapi.models.EventModel;
 import com.premise.eventsapi.services.GitHubEventsService;
 import com.premise.eventsapi.services.impl.GitHubEventsServiceImpl;
+import com.premise.eventsapi.view.EventsAdapter;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends ListActivity implements OnClickListener {
 	private ProgressDialog pDialog;
 	GitHubEventsService gitHubEventsService = new GitHubEventsServiceImpl();
 
@@ -34,6 +35,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private class GetEvents extends AsyncTask<Void, Void, String> {
+		List<EventModel> events;
 
 		@Override
 		protected void onPreExecute() {
@@ -49,26 +51,19 @@ public class MainActivity extends Activity implements OnClickListener {
 		@Override
 		protected String doInBackground(Void... params) {
 			// Request the Events
-			List<EventModel> result = gitHubEventsService.getEvents();
-			StringBuilder sb = new StringBuilder();
-			sb.append("Events Result");
-			sb.append("\n");
-			for (EventModel e : result) {
-				sb.append(e.toString());
-				sb.append("\n");
-			}
-			return sb.toString();
+			events = gitHubEventsService.getEvents();
+			return events.toString();
 		}
 
-		// on Post Execute i feel the EditText
+		// on Post Execute i populate the list
 		protected void onPostExecute(String results) {
-			if (results != null) {
-				EditText et = (EditText) findViewById(R.id.my_edit);
-				et.setText(results);
-			}
-			Button b = (Button) findViewById(R.id.my_button);
-			b.setClickable(true);
+			// populate the list
+			ListAdapter adapter = new EventsAdapter(MainActivity.this,
+					events.toArray(new EventModel[0]));
 
+			setListAdapter(adapter);
+
+			// hide Loading
 			if (pDialog.isShowing())
 				pDialog.dismiss();
 		}
