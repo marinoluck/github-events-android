@@ -3,6 +3,7 @@ package com.premise.eventsapi;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -15,7 +16,7 @@ import com.premise.eventsapi.services.GitHubEventsService;
 import com.premise.eventsapi.services.impl.GitHubEventsServiceImpl;
 
 public class MainActivity extends Activity implements OnClickListener {
-
+	private ProgressDialog pDialog;
 	GitHubEventsService gitHubEventsService = new GitHubEventsServiceImpl();
 
 	@Override
@@ -33,6 +34,17 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private class GetEvents extends AsyncTask<Void, Void, String> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			// Showing progress dialog
+			pDialog = new ProgressDialog(MainActivity.this);
+			pDialog.setMessage("Please wait...");
+			pDialog.setCancelable(false);
+			pDialog.show();
+
+		}
 
 		@Override
 		protected String doInBackground(Void... params) {
@@ -56,6 +68,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 			Button b = (Button) findViewById(R.id.my_button);
 			b.setClickable(true);
+
+			if (pDialog.isShowing())
+				pDialog.dismiss();
 		}
 	}
 
