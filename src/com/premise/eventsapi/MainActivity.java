@@ -42,7 +42,7 @@ public class MainActivity extends ListActivity implements OnClickListener {
 			super.onPreExecute();
 			// Showing progress dialog
 			pDialog = new ProgressDialog(MainActivity.this);
-			pDialog.setMessage("Please wait...");
+			pDialog.setMessage(getString(R.string.please_wait));
 			pDialog.setCancelable(false);
 			pDialog.show();
 

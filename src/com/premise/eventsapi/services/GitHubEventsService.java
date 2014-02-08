@@ -10,6 +10,7 @@ import com.premise.eventsapi.models.EventModel;
  *
  */
 public interface GitHubEventsService {
+	
 	/**
 	 * Gets a list of events without filters
 	 * @return

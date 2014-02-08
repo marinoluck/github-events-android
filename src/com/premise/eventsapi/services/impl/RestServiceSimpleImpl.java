@@ -15,27 +15,50 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import com.premise.eventsapi.services.SimpleHttpService;
+import com.premise.eventsapi.services.RestService;
 
 /**
- * HttpServiceSimpleImpl
+ * RestServiceSimpleImpl
  * It is a class that encapsulates how http requests (get or post) are performed. 
  * It uses org.apache.http classes included in the android api
  * @author luck
  *
  */
-public class HttpServiceSimpleImpl implements SimpleHttpService {
+public class RestServiceSimpleImpl implements RestService {
 
+	private final static int GET = 1;
+	private final static int POST = 2;
+	protected String baseUrl = "";
 	static String response = null;
 	
 	/**
-	 * Making service call
-	 * 
-	 * @url - url to make request
-	 * @method - http request method
-	 * */
-	public String makeServiceCall(String url, int method) {
-		return this.makeServiceCall(url, method, null);
+	 * Configures the base url and initialize the service.
+	 * @param baseUrlApi
+	 */
+	public RestServiceSimpleImpl(String baseUrlApi) 
+	{
+		configure(baseUrlApi);
+	}
+	
+	public RestServiceSimpleImpl() 
+	{
+	
+	}
+	
+	public String post(String method) {
+		return this.makeServiceCall(baseUrl + method, POST, null);
+	}
+	
+	public String post(String method, List<NameValuePair> params) {
+		return this.makeServiceCall(baseUrl + method, POST, params);
+	}
+	
+	public String get(String method) {
+		return this.makeServiceCall(baseUrl + method, GET, null);
+	}
+	
+	public String get(String method, List<NameValuePair> params) {
+		return this.makeServiceCall(baseUrl + method, GET, params);
 	}
 	
 	/**
@@ -45,8 +68,9 @@ public class HttpServiceSimpleImpl implements SimpleHttpService {
 	 * @method - http request method
 	 * @params - http request params
 	 * */
-	public String makeServiceCall(String url, int method,
+	private String makeServiceCall(String url, int method,
 			List<NameValuePair> params) {
+		
 		try {
 			// http client
 			DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -88,5 +112,11 @@ public class HttpServiceSimpleImpl implements SimpleHttpService {
 
 		return response;
 
+	}
+
+	@Override
+	public void configure(String baseUrlApi) {
+		this.baseUrl = baseUrlApi;
+		
 	}
 }

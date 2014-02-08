@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     
     <string name="click_me">Click Me!</string>
+    <string name="please_wait">Please Wait .....</string>
 
 </resources>
